@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-//import { SalesforceService } from '../../services/salesforce.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',

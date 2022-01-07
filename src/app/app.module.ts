@@ -3,8 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NxtAppModule } from 'nxt-app';
-
 
 @NgModule({
   declarations: [
@@ -12,8 +10,7 @@ import { NxtAppModule } from 'nxt-app';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    NxtAppModule
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
