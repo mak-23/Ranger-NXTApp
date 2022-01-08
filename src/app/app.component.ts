@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, enableProdMode, OnInit } from '@angular/core';
+import {  ActivatedRoute,Params } from '@angular/router'; 
+
 
 @Component({
   selector: 'app-root',
@@ -7,4 +9,12 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'Ranger-NXTApp';
+  qbId = 'a049D000002qLDVQA2';
+  constructor(private route: ActivatedRoute) {
+
+  }
+
+  ngOnInit() {
+    
 }
+}enableProdMode();

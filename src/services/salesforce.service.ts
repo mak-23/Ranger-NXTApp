@@ -1,27 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
 
 declare class Visualforce {
     static remoting: { Manager: { invokeAction: any } };
-}
-
-/**
- * interface RemoteActionConfig:
- *
- * buffer - Boolean	Whether to group requests executed close to each other in time into a single request.
- * The default is true. JavaScript remoting optimizes requests that are executed close to each other in time and groups
- * the calls into a single request.
- * This buffering improve the efficiency of the overall request-and-response cycle,
- * but sometimes it’s useful to ensure all requests execute independently.
- *
- * escape - Boolean	Whether to escape the Apex method’s response. The default is true.
- * timeout	Integer	The timeout for the request, in milliseconds.
- * The default is 30,000 (30 seconds). The maximum is 120,000 (120 seconds, or 2 minutes).
- */
-interface RemoteActionConfig {
-    buffer: boolean;
-    escape?: boolean;
-    timeout?: number;
 }
 
 @Injectable({
@@ -29,30 +10,44 @@ interface RemoteActionConfig {
 })
 
 export class SalesforceService {
+    public getSFResource = (path: string) => `${window['_VfResources']}${path}`;
+    public getRNXTMethodName = () => `${window['_rnxtMethodName']}`;
 
-    public getResource = (path: string) => `${window['_VfResources']}/${path}`;
+    public remoteAction(methodName: string,
+                        params: string[],
+                        resolve,
+                        reject,
+                        config?: any) {
+      // console.log('inside SalesforceService.remoteAction for ' + methodName);
+      const self = this;
+      var nsMethodName = this.getRNXTMethodName();
+      //console.log('method name in lib = ' + nsMethodName);
 
-    /**
-     * @method remoteAction
-     * @param methodPath - ControllerName.RemoteActionMethodName
-     * @param params - Use the parameters as convenient for you
-     * @param config - Configuration parameters of remote action
-     */
-    public remoteAction(methodPath: string, params: any, config?: RemoteActionConfig): Observable<any> {
-        return new Observable (observer  => {
-            Visualforce.remoting.Manager.invokeAction(
-                methodPath,
-                ...params,
-                (result, event) => {
-                    if (event.status) {
-                        observer.next(result);
-                    } else {
-                        observer.error(result);
-                    }
-                    observer.complete();
-                },
-                config || { buffer: false, escape: false }
-            );
-        });
+      Visualforce.remoting.Manager.invokeAction(
+        nsMethodName,
+        //'NxtController.process',
+        //`{!$RemoteAction.NxtController.process}`,
+        ...params,
+        function (result, event) {
+          try {
+            result = JSON.parse(result);
+          } catch (error) {
+            reject(error);
+          }
+          console.log('Function called was - ' + methodName);
+          //console.log(result);
+          //console.log(resolve(result));
+          if (result.status) {
+              resolve(result);
+          } else {
+              resolve(result);
+          }
+        },
+        config || { buffer: false, escape: false }
+      );
+    }
+
+    constructor(private _router: Router ,private route: ActivatedRoute) {
+
     }
 }
