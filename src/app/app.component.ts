@@ -7,7 +7,7 @@ import {  ActivatedRoute,Params } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Ranger-NXTApp';
   qbId = 'a049D000002qLDVQA2';
   constructor(private route: ActivatedRoute) {
